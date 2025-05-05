@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Data
-public class TaskDeskResponseDto {
+public class TaskBoardResponseDto {
     private UUID id;
     private String name;
     private Instant createdAt;

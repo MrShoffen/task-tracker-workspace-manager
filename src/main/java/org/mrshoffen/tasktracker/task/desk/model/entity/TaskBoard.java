@@ -8,8 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -17,14 +15,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "desks",
+@Table(name = "boards",
         uniqueConstraints = {
                 @UniqueConstraint(
                         columnNames = {"user_id", "name"}
                 )
         }
 )
-public class TaskDesk {
+public class TaskBoard {
 
     @Id
     @UuidGenerator

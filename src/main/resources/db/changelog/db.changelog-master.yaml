@@ -1,4 +1,4 @@
 
 databaseChangeLog:
   - include:
-      file: db/changelog/desk-table.sql
+      file: db/changelog/board-table.sql

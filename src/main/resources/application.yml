@@ -23,7 +23,7 @@ kafka-user:
 
 spring:
   application:
-    name: desk-manager-ws
+    name: board-manager-ws
   profiles:
     active: discovery-service-user, postgres-user
   config:

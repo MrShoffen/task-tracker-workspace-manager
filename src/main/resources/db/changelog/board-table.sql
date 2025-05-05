@@ -2,7 +2,7 @@
 
 
 --changeset mrshoffen:2
-CREATE TABLE IF NOT EXISTS desks
+CREATE TABLE IF NOT EXISTS boards
 (
     id         UUID PRIMARY KEY,
     name       VARCHAR(128) NOT NULL,
