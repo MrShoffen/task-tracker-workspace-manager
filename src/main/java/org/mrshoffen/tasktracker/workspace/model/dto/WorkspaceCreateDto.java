@@ -1,12 +1,15 @@
-package org.mrshoffen.tasktracker.task.desk.model.dto;
+package org.mrshoffen.tasktracker.workspace.model.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record TaskBoardCreateDto(
+public record WorkspaceCreateDto(
         @Size(max = 128, min = 1, message = "Имя доски должно быть между 3 и 128 символами")
         @NotBlank(message = "Имя доски не может быть пустым")
-        String name
+        String name,
+
+        @NotNull(message = "Необходимо указать уровень приватности пространства")
+        Boolean isPublic
 ) {
 }
