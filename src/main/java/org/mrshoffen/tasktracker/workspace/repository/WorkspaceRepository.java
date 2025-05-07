@@ -11,7 +11,6 @@ import java.util.UUID;
 @Repository
 public interface WorkspaceRepository extends ReactiveCrudRepository<Workspace, UUID> {
 
-    Mono<Workspace> findByIdAndUserId(UUID workspaceId, UUID userId);
-
     Flux<Workspace> findAllByUserId(UUID userId);
+
 }

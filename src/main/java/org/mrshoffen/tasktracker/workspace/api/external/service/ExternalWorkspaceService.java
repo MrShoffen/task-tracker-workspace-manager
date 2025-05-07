@@ -1,14 +1,13 @@
-package org.mrshoffen.tasktracker.workspace.service;
+package org.mrshoffen.tasktracker.workspace.api.external.service;
 
 
 import lombok.RequiredArgsConstructor;
 import org.mrshoffen.tasktracker.commons.web.dto.WorkspaceResponseDto;
-import org.mrshoffen.tasktracker.workspace.exception.WorkspaceAlreadyExistsException;
-import org.mrshoffen.tasktracker.workspace.exception.WorkspaceNotFoundException;
+import org.mrshoffen.tasktracker.commons.web.exception.EntityAlreadyExistsException;
+import org.mrshoffen.tasktracker.workspace.mapper.WorkspaceMapper;
 import org.mrshoffen.tasktracker.workspace.model.dto.WorkspaceCreateDto;
 import org.mrshoffen.tasktracker.workspace.model.entity.Workspace;
 import org.mrshoffen.tasktracker.workspace.repository.WorkspaceRepository;
-import org.mrshoffen.tasktracker.workspace.util.mapper.WorkspaceMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -18,7 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class WorkspaceService {
+public class ExternalWorkspaceService {
 
     private final WorkspaceMapper taskDeskMapper;
 
@@ -31,29 +30,17 @@ public class WorkspaceService {
         return workspaceRepository
                 .save(workspace)
                 .onErrorMap(DataIntegrityViolationException.class, e ->
-                        new WorkspaceAlreadyExistsException(
+                        new EntityAlreadyExistsException(
                                 "Пространство с именем '%s' уже существует у пользователя."
                                         .formatted(workspaceCreateDto.name()))
                 )
                 .map(taskDeskMapper::toDto);
     }
 
-    public Flux<WorkspaceResponseDto> getAllUserDesks(UUID userId) {
+    public Flux<WorkspaceResponseDto> getAllUserWorkspaces(UUID userId) {
         return workspaceRepository
                 .findAllByUserId(userId)
                 .map(taskDeskMapper::toDto);
-    }
-
-    public Mono<WorkspaceResponseDto> getUserWorkspace(UUID userId, UUID workspaceId) {
-        return workspaceRepository
-                .findByIdAndUserId(workspaceId, userId)
-                .map(taskDeskMapper::toDto)
-                .switchIfEmpty(
-                        Mono.error(new WorkspaceNotFoundException(
-                                "Пространство с именем %s не найдено у пользователя"
-                                        .formatted(workspaceId.toString())
-                        ))
-                );
     }
 
 }
