@@ -2,8 +2,8 @@ package org.mrshoffen.tasktracker.workspace.util.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import org.mrshoffen.tasktracker.commons.web.dto.WorkspaceResponseDto;
 import org.mrshoffen.tasktracker.workspace.model.dto.WorkspaceCreateDto;
-import org.mrshoffen.tasktracker.workspace.model.dto.WorkspaceResponseDto;
 import org.mrshoffen.tasktracker.workspace.model.entity.Workspace;
 
 import java.util.UUID;

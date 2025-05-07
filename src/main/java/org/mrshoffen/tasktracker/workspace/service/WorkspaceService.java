@@ -2,10 +2,10 @@ package org.mrshoffen.tasktracker.workspace.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.mrshoffen.tasktracker.commons.web.dto.WorkspaceResponseDto;
 import org.mrshoffen.tasktracker.workspace.exception.WorkspaceAlreadyExistsException;
 import org.mrshoffen.tasktracker.workspace.exception.WorkspaceNotFoundException;
 import org.mrshoffen.tasktracker.workspace.model.dto.WorkspaceCreateDto;
-import org.mrshoffen.tasktracker.workspace.model.dto.WorkspaceResponseDto;
 import org.mrshoffen.tasktracker.workspace.model.entity.Workspace;
 import org.mrshoffen.tasktracker.workspace.repository.WorkspaceRepository;
 import org.mrshoffen.tasktracker.workspace.util.mapper.WorkspaceMapper;
@@ -44,11 +44,16 @@ public class WorkspaceService {
                 .map(taskDeskMapper::toDto);
     }
 
-
-    public Mono<Workspace> getUserWorkspaceWithName(UUID userId, String workspaceName) {
+    public Mono<WorkspaceResponseDto> getUserWorkspace(UUID userId, UUID workspaceId) {
         return workspaceRepository
-                .findByUserIdAndName(userId, workspaceName)
-                .switchIfEmpty(Mono.error(new WorkspaceNotFoundException("Пространство с именем %s не найдено у пользователя")));
+                .findByIdAndUserId(workspaceId, userId)
+                .map(taskDeskMapper::toDto)
+                .switchIfEmpty(
+                        Mono.error(new WorkspaceNotFoundException(
+                                "Пространство с именем %s не найдено у пользователя"
+                                        .formatted(workspaceId.toString())
+                        ))
+                );
     }
 
 }
