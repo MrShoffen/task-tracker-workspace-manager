@@ -29,7 +29,7 @@ public class WorkspaceAggregationController {
     /**
      * Необходим для агрегации данных workspace
      */
-    @GetMapping("/{workspaceId}/full")
+    @GetMapping("/{workspaceId}")
     public Mono<WorkspaceResponseDto> getWorkspaceById(@PathVariable("workspaceId") UUID workspaceId) {
         return taskDeskService
                 .getWorkspace(workspaceId)

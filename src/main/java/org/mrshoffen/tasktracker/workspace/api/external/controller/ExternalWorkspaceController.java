@@ -49,4 +49,12 @@ public class ExternalWorkspaceController {
                 .getAllUserWorkspaces(userId)
                 .map(linksInjector::injectLinks);
     }
+
+    @DeleteMapping("/{workspaceId}")
+    Mono<ResponseEntity<Void>> deleteWorkspace(@RequestHeader(AUTHORIZED_USER_HEADER_NAME) UUID userId,
+                                               @PathVariable UUID workspaceId) {
+        return taskDeskService
+                .deleteUserWorkspace(userId, workspaceId)
+                .then(Mono.just(ResponseEntity.noContent().build()));
+    }
 }
