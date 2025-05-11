@@ -1,9 +1,9 @@
-package org.mrshoffen.tasktracker.workspace.api.bff.controller;
+package org.mrshoffen.tasktracker.workspace.controller;
 
 
 import lombok.RequiredArgsConstructor;
 import org.mrshoffen.tasktracker.commons.web.dto.WorkspaceResponseDto;
-import org.mrshoffen.tasktracker.workspace.api.bff.service.WorkspaceAggregationService;
+import org.mrshoffen.tasktracker.workspace.service.WorkspaceService;
 import org.mrshoffen.tasktracker.workspace.model.dto.links.WorkspaceDtoLinksInjector;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/aggregate-api/workspaces")
 public class WorkspaceAggregationController {
 
-    private final WorkspaceAggregationService taskDeskService;
+    private final WorkspaceService workspaceService;
 
     private final WorkspaceDtoLinksInjector linksInjector;
 
@@ -31,7 +31,7 @@ public class WorkspaceAggregationController {
      */
     @GetMapping("/{workspaceId}")
     public Mono<WorkspaceResponseDto> getWorkspaceById(@PathVariable("workspaceId") UUID workspaceId) {
-        return taskDeskService
+        return workspaceService
                 .getWorkspace(workspaceId)
                 .map(linksInjector::injectLinks);
     }
