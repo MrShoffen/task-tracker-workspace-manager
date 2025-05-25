@@ -49,6 +49,21 @@ public class WorkspaceDtoLinksInjector extends LinksInjector<WorkspaceResponseDt
                         .andMethod("DELETE")
                         .build()
                 )
+                .addLink(Link.forName("updateWorkspaceName")
+                        .andHref(apiPrefix + "/workspaces/" + dto.getId() + "/name")
+                        .andMethod("PATCH")
+                        .build()
+                )
+                .addLink(Link.forName("updateWorkspaceAccess")
+                        .andHref(apiPrefix + "/workspaces/" + dto.getId() + "/access")
+                        .andMethod("PATCH")
+                        .build()
+                )
+                .addLink(Link.forName("updateWorkspaceCover")
+                        .andHref(apiPrefix + "/workspaces/" + dto.getId() + "/cover")
+                        .andMethod("PATCH")
+                        .build()
+                )
                 .build();
 
     }

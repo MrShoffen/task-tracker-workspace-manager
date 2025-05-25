@@ -1,4 +1,4 @@
-package org.mrshoffen.tasktracker.workspace.model.dto;
+package org.mrshoffen.tasktracker.workspace.model.dto.create;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +10,8 @@ public record WorkspaceCreateDto(
         String name,
 
         @NotNull(message = "Необходимо указать уровень приватности пространства")
-        Boolean isPublic
+        Boolean isPublic,
+
+        String coverUrl
 ) {
 }

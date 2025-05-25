@@ -7,10 +7,14 @@ import org.mrshoffen.tasktracker.commons.web.exception.EntityAlreadyExistsExcept
 import org.mrshoffen.tasktracker.commons.web.exception.EntityNotFoundException;
 import org.mrshoffen.tasktracker.workspace.event.WorkspaceEventPublisher;
 import org.mrshoffen.tasktracker.workspace.mapper.WorkspaceMapper;
-import org.mrshoffen.tasktracker.workspace.model.dto.WorkspaceCreateDto;
+import org.mrshoffen.tasktracker.workspace.model.dto.create.WorkspaceCreateDto;
+import org.mrshoffen.tasktracker.workspace.model.dto.edit.AccessEditDto;
+import org.mrshoffen.tasktracker.workspace.model.dto.edit.CoverEditDto;
+import org.mrshoffen.tasktracker.workspace.model.dto.edit.NameEditDto;
 import org.mrshoffen.tasktracker.workspace.model.entity.Workspace;
 import org.mrshoffen.tasktracker.workspace.repository.WorkspaceRepository;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -73,6 +77,50 @@ public class WorkspaceService {
                 .switchIfEmpty(
                         Mono.error(new EntityNotFoundException(
                                 "Пространство с именем %s не найдено"
+                                        .formatted(workspaceId.toString())
+                        ))
+                );
+    }
+
+    public Mono<WorkspaceResponseDto> updateName(UUID workspaceId, NameEditDto dto) {
+        return getWorkspaceOrThrow(workspaceId)
+                .flatMap(ws -> {
+                    ws.setName(dto.newName());
+                    return workspaceRepository.save(ws);
+                })
+                .onErrorMap(DuplicateKeyException.class, e ->
+                        new EntityAlreadyExistsException(
+                                "Пространство с именем '%s' уже существует"
+                                        .formatted(dto.newName())
+                        )
+                )
+                .map(taskDeskMapper::toDto);
+    }
+
+    public Mono<WorkspaceResponseDto> updateAccess(UUID workspaceId, AccessEditDto dto) {
+        return getWorkspaceOrThrow(workspaceId)
+                .flatMap(ws -> {
+                    ws.setIsPublic(dto.isPublic());
+                    return workspaceRepository.save(ws);
+                })
+                .map(taskDeskMapper::toDto);
+    }
+
+    public Mono<WorkspaceResponseDto> updateCover(UUID workspaceId, CoverEditDto dto) {
+        return getWorkspaceOrThrow(workspaceId)
+                .flatMap(ws -> {
+                    ws.setCoverUrl(dto.newCoverUrl());
+                    return workspaceRepository.save(ws);
+                })
+                .map(taskDeskMapper::toDto);
+    }
+
+    private Mono<Workspace> getWorkspaceOrThrow(UUID workspaceId) {
+        return workspaceRepository
+                .findById(workspaceId)
+                .switchIfEmpty(
+                        Mono.error(new EntityNotFoundException(
+                                "Пространство с id %s не найдена в данном пространстве"
                                         .formatted(workspaceId.toString())
                         ))
                 );

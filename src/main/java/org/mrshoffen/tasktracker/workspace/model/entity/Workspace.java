@@ -28,6 +28,9 @@ public class Workspace {
     @Column("is_public")
     private Boolean isPublic = false;
 
+    @Column("cover_url")
+    private String coverUrl;
+
     @Column("created_at")
     private Instant createdAt = Instant.now();
 
