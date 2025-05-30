@@ -37,16 +37,13 @@ public class WorkspaceService {
 
         return workspaceRepository
                 .save(workspace)
-                .doOnSuccess(ws ->
-                        workspaceEventPublisher
-                                .publishWorkspaceCreatedEvent(userId, ws.getId())
-                )
                 .onErrorMap(DataIntegrityViolationException.class, e ->
                         new EntityAlreadyExistsException(
                                 "Пространство с именем '%s' уже существует у пользователя."
                                         .formatted(workspaceCreateDto.name()))
                 )
-                .map(taskDeskMapper::toDto);
+                .map(taskDeskMapper::toDto)
+                .doOnSuccess(workspaceEventPublisher::publishWorkspaceCreatedEvent);
     }
 
     public Flux<WorkspaceResponseDto> getAllUserWorkspaces(UUID userId) {
@@ -82,7 +79,7 @@ public class WorkspaceService {
                 );
     }
 
-    public Mono<WorkspaceResponseDto> updateName(UUID workspaceId, NameEditDto dto) {
+    public Mono<WorkspaceResponseDto> updateName(UUID workspaceId, NameEditDto dto, UUID userId) {
         return getWorkspaceOrThrow(workspaceId)
                 .flatMap(ws -> {
                     ws.setName(dto.newName());
@@ -94,25 +91,34 @@ public class WorkspaceService {
                                         .formatted(dto.newName())
                         )
                 )
-                .map(taskDeskMapper::toDto);
+                .map(taskDeskMapper::toDto)
+                .doOnSuccess(ws -> workspaceEventPublisher
+                        .publishWorkspaceUpdatedEvent(workspaceId, "name", dto.newName(), userId));
+
     }
 
-    public Mono<WorkspaceResponseDto> updateAccess(UUID workspaceId, AccessEditDto dto) {
+    public Mono<WorkspaceResponseDto> updateAccess(UUID workspaceId, AccessEditDto dto, UUID userId) {
         return getWorkspaceOrThrow(workspaceId)
                 .flatMap(ws -> {
                     ws.setIsPublic(dto.isPublic());
                     return workspaceRepository.save(ws);
                 })
-                .map(taskDeskMapper::toDto);
+                .map(taskDeskMapper::toDto)
+                .doOnSuccess(ws -> workspaceEventPublisher
+                        .publishWorkspaceUpdatedEvent(workspaceId, "isPublic", dto.isPublic(), userId));
+
     }
 
-    public Mono<WorkspaceResponseDto> updateCover(UUID workspaceId, CoverEditDto dto) {
+    public Mono<WorkspaceResponseDto> updateCover(UUID workspaceId, CoverEditDto dto, UUID userId) {
         return getWorkspaceOrThrow(workspaceId)
                 .flatMap(ws -> {
                     ws.setCoverUrl(dto.newCoverUrl());
                     return workspaceRepository.save(ws);
                 })
-                .map(taskDeskMapper::toDto);
+                .map(taskDeskMapper::toDto)
+                .doOnSuccess(ws -> workspaceEventPublisher
+                        .publishWorkspaceUpdatedEvent(workspaceId, "coverUrl", dto.newCoverUrl(), userId));
+
     }
 
     private Mono<Workspace> getWorkspaceOrThrow(UUID workspaceId) {
