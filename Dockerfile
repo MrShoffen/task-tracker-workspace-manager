@@ -45,7 +45,7 @@ RUN mkdir -p /opt/workspace/logs
 
 # Модифицированный ENTRYPOINT с JIT-логированием
 ENTRYPOINT ["java", \
-    "-XX:+PrintCompilation", \
+    "-XX:+PrintAssembly", \
     "-XX:+UnlockDiagnosticVMOptions", \
     "-XX:+PrintInlining", \
     "-XX:+LogCompilation", \
