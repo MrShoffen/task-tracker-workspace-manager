@@ -45,9 +45,9 @@ RUN mkdir -p /opt/workspace/logs
 
 # Модифицированный ENTRYPOINT с JIT-логированием
 ENTRYPOINT ["java", \
-    "-XX:+PrintAssembly", \
     "-XX:+UnlockDiagnosticVMOptions", \
-    "-XX:+PrintInlining", \
     "-XX:+LogCompilation", \
+    "-XX:+PrintAssembly", \
+    "-XX:+PrintInlining", \
     "-XX:LogFile=/opt/workspace/logs/jit.log", \
     "org.springframework.boot.loader.launch.JarLauncher"]
