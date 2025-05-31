@@ -40,14 +40,4 @@ COPY --from=app-build $BUILD_PATH/spring-boot-loader/ ./
 COPY --from=app-build $BUILD_PATH/dependencies/ ./
 COPY --from=app-build $BUILD_PATH/application/ ./
 
-# Создаем директорию для логов JIT
-RUN mkdir -p /opt/workspace/logs
-
-# Модифицированный ENTRYPOINT с JIT-логированием
-ENTRYPOINT ["java", \
-    "-XX:+UnlockDiagnosticVMOptions", \
-    "-XX:+LogCompilation", \
-    "-XX:+PrintAssembly", \
-    "-XX:+PrintInlining", \
-    "-XX:LogFile=/opt/workspace/logs/jit.log", \
-    "org.springframework.boot.loader.launch.JarLauncher"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
