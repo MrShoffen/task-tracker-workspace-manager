@@ -89,6 +89,15 @@ public class ExternalWorkspaceController {
                 .getAllUserWorkspaces(userId);
     }
 
+    @GetMapping("/shared")
+    Flux<WorkspaceResponseDto> getSharedUserWorkspaces(@RequestHeader(AUTHORIZED_USER_HEADER_NAME) UUID userId) {
+        return permissionsService
+                .getUserPermissions(userId)
+                .flatMap(permission -> workspaceService.getWorkspace(permission.getWorkspaceId()))
+                .filter(ws -> !ws.getUserId().equals(userId));
+    }
+
+
     @DeleteMapping("/{workspaceId}")
     Mono<ResponseEntity<Void>> deleteWorkspace(@RequestHeader(AUTHORIZED_USER_HEADER_NAME) UUID userId,
                                                @PathVariable UUID workspaceId) {

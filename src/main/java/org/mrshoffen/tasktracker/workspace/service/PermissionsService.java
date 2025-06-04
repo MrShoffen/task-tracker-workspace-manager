@@ -1,10 +1,12 @@
 package org.mrshoffen.tasktracker.workspace.service;
 
 import lombok.RequiredArgsConstructor;
+import org.mrshoffen.tasktracker.commons.web.dto.UserPermissionResponseDto;
 import org.mrshoffen.tasktracker.commons.web.exception.AccessDeniedException;
 import org.mrshoffen.tasktracker.commons.web.permissions.Permission;
 import org.mrshoffen.tasktracker.workspace.client.PermissionsClient;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -29,5 +31,8 @@ public class PermissionsService {
                 .then();
     }
 
+    public Flux<UserPermissionResponseDto> getUserPermissions(UUID userId) {
+        return permissionsClient.getUserPermissions(userId);
+    }
 
 }
